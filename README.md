@@ -24,7 +24,7 @@ Segment patients into quartiles based on total billing amount → NTILE(4)
 
 Compute three-month moving averages of hospital revenue → AVG() OVER()
 
-**Database Schema Design**
+## Database Schema Desig
 
 <img width="1075" height="711" alt="Screenshot 2026-02-08 022328" src="https://github.com/user-attachments/assets/8df75e9a-52fe-49b5-9323-5012a6717ca6" />
 
