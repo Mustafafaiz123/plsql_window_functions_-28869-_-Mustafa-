@@ -1,4 +1,4 @@
-# plsql_window_functions_-28869-_-Mustafa-
+# plsql_window_functions_28869_Mustafa
 **Business Context**
 
 A private hospital operating within the Healthcare Services industry, specifically in the Medical Records and Billing Department.
