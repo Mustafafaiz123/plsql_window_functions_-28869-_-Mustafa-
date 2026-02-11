@@ -1,0 +1,95 @@
+5. SQL Scripts
+Table Creation
+
+CREATE TABLE Patients (
+    patient_id INT PRIMARY KEY,
+    patient_name VARCHAR(100),
+    gender VARCHAR(10),
+    age INT
+);
+
+CREATE TABLE Doctors (
+    doctor_id INT PRIMARY KEY,
+    doctor_name VARCHAR(100),
+    specialization VARCHAR(50)
+);
+
+CREATE TABLE Appointments (
+    appointment_id INT PRIMARY KEY,
+    patient_id INT,
+    doctor_id INT,
+    appointment_date DATE,
+    service_fee DECIMAL(10,2),
+    FOREIGN KEY (patient_id) REFERENCES Patients(patient_id),
+    FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id)
+);
+1. INNER JOIN
+
+Retrieve valid patient appointments.
+
+SELECT a.appointment_id, p.patient_name, d.doctor_name, a.service_fee
+FROM Appointments a
+INNER JOIN Patients p ON a.patient_id = p.patient_id
+INNER JOIN Doctors d ON a.doctor_id = d.doctor_id;
+
+2. LEFT JOIN
+
+Patients with no appointments.
+
+SELECT p.patient_id, p.patient_name
+FROM Patients p
+LEFT JOIN Appointments a ON p.patient_id = a.patient_id
+WHERE a.appointment_id IS NULL;
+
+3. RIGHT JOIN
+
+Doctors with no appointments.
+
+SELECT d.doctor_id, d.doctor_name
+FROM Appointments a
+RIGHT JOIN Doctors d ON a.doctor_id = d.doctor_id
+WHERE a.appointment_id IS NULL;
+
+4. FULL OUTER JOIN
+
+Patients and doctors including unmatched records.
+
+SELECT p.patient_name, d.doctor_name
+FROM Patients p
+FULL OUTER JOIN Doctors d
+ON p.gender = d.specialization;
+
+5. SELF JOIN
+
+Doctors within the same specialization.
+
+SELECT d1.doctor_name, d2.doctor_name, d1.specialization
+FROM Doctors d1
+JOIN Doctors d2
+ON d1.specialization = d2.specialization
+AND d1.doctor_id <> d2.doctor_id;
+
+7. Part B — Window Functions
+1. Ranking Functions
+SELECT doctor_id, COUNT(*) AS total_appointments,
+RANK() OVER (ORDER BY COUNT(*) DESC) AS doctor_rank
+FROM Appointments
+GROUP BY doctor_id;
+
+2. Aggregate Window Functions
+SELECT appointment_date,
+SUM(service_fee) OVER (ORDER BY appointment_date
+ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_revenue
+FROM Appointments;
+
+3. Navigation Functions
+SELECT appointment_date, service_fee,
+LAG(service_fee) OVER (ORDER BY appointment_date) AS previous_fee
+FROM Appointments;
+
+4. Distribution Functions
+SELECT patient_id,
+NTILE(4) OVER (ORDER BY SUM(service_fee) DESC) AS billing_quartile
+FROM Appointments
+GROUP BY patient_id;
+
